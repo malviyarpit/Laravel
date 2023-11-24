@@ -1,13 +1,11 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ProductController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +19,7 @@ use App\Http\Controllers\ProductController;
 */
 
 Route::get('/', [CategoryController::class, 'getCategoryList'])->name('categories.index');
+Route::get('/categories/show', [CategoryController::class, 'index'])->name('adminCategories.index');
 Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
 Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
 Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
@@ -31,13 +30,13 @@ Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])-
 Route::get('/albums/show/{categoryId}', [AlbumController::class, 'getAlbumByCategoryId'])->name('albums.index');
 
 Route::get('login', [AuthController::class, 'index'])->name('login');
-Route::post('post-login', [AuthController::class, 'postLogin'])->name('login.post'); 
-Route::get('dashboard', [AuthController::class, 'dashboard']); 
+Route::post('post-login', [AuthController::class, 'postLogin'])->name('login.post');
+Route::get('dashboard', [AuthController::class, 'dashboard']);
 Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
 // Auth::routes();
 
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth']], function () {
     Route::resource('roles', RoleController::class);
     Route::resource('users', UserController::class);
     Route::resource('categories', CategoryController::class);

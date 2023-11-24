@@ -16,32 +16,51 @@ class CategoryController extends Controller
         return view('category.index', compact('categories'));
     }
 
+    public function index()
+    {
+        $categoryModel = new Category();
+
+        $categories = $categoryModel->getCategories();
+
+        return view('admin.category.index', compact('categories'));
+    }
+
     public function create()
     {
-        return view('category.create');
+        return view('admin.category.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required',
-            'content' => 'required',
+            'name' => 'required',
+            'description' => 'required',
+            'slug' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        Category::create($request->all());
+        $imageName = time().'.'.$request->image->extension();
+        $request->image->move(public_path(), $imageName);
 
-        return redirect()->route('category.index')
+        Category::create([
+            'name' => $request->name,
+            'image' => $imageName,
+            'description' => $request->description,
+            'slug' => $request->slug,
+        ]);
+
+        return redirect()->route('adminCategories.index')
             ->with('success', 'Category created successfully.');
     }
 
     public function show(Category $category)
     {
-        return view('category.show', compact('category'));
+        return view('admin.category.show', compact('category'));
     }
 
     public function edit(Category $category)
     {
-        return view('category.edit', compact('category'));
+        return view('admin.category.edit', compact('category'));
     }
 
     public function update(Request $request, Category $category)
@@ -49,11 +68,15 @@ class CategoryController extends Controller
         $request->validate([
             'name' => 'required',
             'description' => 'required',
+            'slug' => 'required',
         ]);
+
+        $imageName = time().'.'.$request->image->extension();
+        $request->image->move(public_path(), $imageName);
 
         $category->update($request->all());
 
-        return redirect()->route('category.index')
+        return redirect()->route('adminCategories.index')
             ->with('success', 'Category updated successfully.');
     }
 
@@ -61,7 +84,7 @@ class CategoryController extends Controller
     {
         $category->delete();
 
-        return redirect()->route('category.index')
+        return redirect()->route('adminCategories.index')
             ->with('success', 'Category deleted successfully.');
     }
 }

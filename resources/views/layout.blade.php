@@ -6,7 +6,7 @@
         @import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
   
         body{
-            margin: 0;
+            margin-left: 40px;
             font-size: .9rem;
             font-weight: 400;
             line-height: 1.6;
@@ -24,6 +24,7 @@
         }
         .my-form
         {
+            padding-left: 1rem;
             padding-top: 1.5rem;
             padding-bottom: 1.5rem;
         }
