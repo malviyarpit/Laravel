@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
   
+use App\Models\UserRole;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -43,10 +44,20 @@ class AuthController extends Controller
    
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
-            return redirect()->intended('dashboard')
+            $user = Auth::user();
+
+            $roleModel = new UserRole();
+
+            $roles = $roleModel->getUserRole($user->id);
+
+            if (in_array('Super Admin', $roles) || in_array('Editor', $roles) || in_array('Content Creator', $roles)) {
+                    return redirect()->intended('dashboard')
                         ->withSuccess('You have Successfully loggedin');
-        }
-  
+                } else {
+                    return redirect("login")->withSuccess("Oppes! You don't have the admin rights");
+                }
+            }
+
         return redirect("login")->withSuccess('Oppes! You have entered invalid credentials');
     }
           
@@ -73,6 +84,6 @@ class AuthController extends Controller
         Session::flush();
         Auth::logout();
   
-        return Redirect('auth.login');
+        return redirect("login")->withSuccess('logout successfully!');
     }
 }

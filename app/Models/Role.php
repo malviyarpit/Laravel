@@ -27,4 +27,8 @@ class Role extends Model
 
         return $response;
     }
+
+    public function getRolesData() {
+        return $this->select('id', 'role')->get();
+    }
 }

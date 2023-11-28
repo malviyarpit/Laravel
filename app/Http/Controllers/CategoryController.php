@@ -71,8 +71,7 @@ class CategoryController extends Controller
             'slug' => 'required',
         ]);
 
-        $imageName = time().'.'.$request->image->extension();
-        $request->image->move(public_path(), $imageName);
+        $request['image'] = !empty($request->image) ? $request->image : $category->image;
 
         $category->update($request->all());
 

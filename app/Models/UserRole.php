@@ -12,4 +12,13 @@ class UserRole extends Model
     protected $table = 'user_roles';
 
     protected $fillable = ['rid', 'uid'];
+
+    public function getUserRole($id) {
+        $response = $this::join('roles', 'roles.id', 'user_roles.rid')
+            ->where('user_roles.uid', $id)
+            ->pluck('roles.role')
+            ->toArray();
+
+        return $response;
+    }
 }
